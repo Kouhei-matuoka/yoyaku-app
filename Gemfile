@@ -13,6 +13,7 @@ gem 'jbuilder',     '~> 2.5'
 gem 'bootstrap-sass'
 gem 'will_paginate' # この行を追加してください。
 gem 'bootstrap-will_paginate' # この行を追加してください。
+gem 'rails-i18n'
 
 
 
