@@ -1,9 +1,17 @@
 /* ユーザー情報テーブル */
 
-.user-table {
+#user-table {
   vertical-align: middle;
   text-align: center;
 }
+
+#user-table thead th {
+  background-color: white;
+  vertical-align: bottom;
+  border-bottom: 3px double #ccc;
+}
+
+
 
 /* ユーザー情報下ボタン */
 
@@ -23,6 +31,14 @@
     vertical-align: middle;
     text-align: center;
   }
+}
+
+.btn-user-table {
+  margin: 30px 0 10px 0;
+}
+
+.btn-edit {
+  margin: -20px 0 0 -65px;
 }
 
 /* 入力フォーム */
@@ -51,6 +67,37 @@
   }  
 }
 
+.input-group {
+  margin: 20px 0 0 15px;
+  p {
+    margin-bottom: -10px;
+  }
+}
+
+.csv-group {
+  margin-right: 25%;
+}
+
+.btn-csv {
+  margin-top: 10px;
+}
+
+.paginate-top {
+  margin-bottom: -30px;
+}
+
+.paginate-bottom {
+  margin-top: -30px;
+}
+
+.acd-users {
+  margin-top: 20px;
+}
+
+.collapse-body {
+  margin-bottom: 50px;
+}
+
 /* 基本情報編集モーダルウインドウ */
 
 .label-basic-info {
@@ -60,4 +107,29 @@
 .btn-basic-info {
   margin: 15px 0;
   width: 30%;
+}
+
+/* 上長勤怠情報テーブル */
+
+.news p {
+  line-height: 0.8em;
+}
+
+.application-form {
+  .btn {
+    margin-top: 10px;
+  }
+}
+
+.notice-superior {
+  border: solid 2px #ff0000;
+  color: #ff0000;
+  font-weight: bold;
+}
+
+.notice-superior:hover {
+  border: solid 2px #f96250;
+  color: #f96250;
+  font-weight: bold;
+  text-decoration: none;
 }

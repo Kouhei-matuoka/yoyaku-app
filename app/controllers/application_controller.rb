@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   include SessionsHelper
+  include UsersHelper
+  include AttendancesHelper
   
   $days_of_the_week = %w{日 月 火 水 木 金 土}
   
@@ -22,13 +24,35 @@ class ApplicationController < ActionController::Base
 
     # アクセスしたユーザーが現在ログインしているユーザーか確認します。
     def correct_user
-      redirect_to(root_url) unless current_user?(@user)
+      redirect_to root_url unless current_user?(@user)
     end
 
     # システム管理権限所有かどうか判定します。
     def admin_user
       redirect_to root_url unless current_user.admin?
     end
+    
+    def superior_user
+      redirect_to root_url unless current_user.superior?
+    end
+    
+    def admin_or_correct_user
+    @user = User.find(params[:user_id]) if @user.blank?
+    unless current_user?(@user) || current_user.admin?
+      flash[:danger] = "編集権限がありません。"
+      redirect_to(root_url)
+    end
+    end
+    
+    # 本人又は、上長のみアクセス可
+    def correct_or_superior_user
+      @user = User.find(params[:user_id]) if @user.blank?
+      unless current_user?(@user) || current_user.superior?
+        flash[:danger] = "編集権限がありません。"
+        redirect_to(root_url)
+      end
+    end
+
   
   # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
   def set_one_month 
@@ -49,5 +73,13 @@ class ApplicationController < ActionController::Base
   rescue ActiveRecord::RecordInvalid
     flash[:danger] = "ページ情報の取得に失敗しました、再アクセスしてください。"
     redirect_to root_url
+  end
+  
+  # １ヶ月の勤怠申請用
+  def set_one_month_apply
+    @first_day = params[:date].nil? ?
+    Date.current.beginning_of_month : params[:date].to_date
+    
+    @attendances = @user.attendances.where(worked_on: @first_day)
   end
 end

@@ -23,6 +23,10 @@ textarea {
   margin-bottom: 10px;
 }
 
+.btn-left {
+  text-align: left;
+}
+
 /* typography */
 
 h1, h2, h3, h4, h5, h6 {
@@ -95,6 +99,45 @@ p {
   .form-control {
     color: $state-danger-text;
   }
+}
+
+/* 出勤社員一覧ページ */
+
+#attend-table {
+  vertical-align: middle;
+  text-align: center;
+  font-weight: bold;
+  thead td {
+    vertical-align: bottom;
+    border-bottom: 3px double #ccc;
+  }
+}
+
+/* 拠点一覧ページ */
+
+#offices-table {
+  vertical-align: middle;
+  text-align: center;
+  thead td {
+    vertical-align: bottom;
+    border-bottom: 3px double #ccc;
+  }
+}
+
+.label-office--edit {
+  margin-top: 5px;
+}
+
+.btn-office--edit {
+  margin-top: 10px;
+}
+
+.btn-office-new {
+  margin: -20px 0 0 -65px;
+}
+
+.collapse-edit {
+  text-align: left;
 }
 
 /* モーダルウインドウの位置調整 */

@@ -9,8 +9,8 @@ class User < ApplicationRecord
   validates :email, presence: true, length: { maximum: 100 },
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: true
-  validates :department, length: { in: 2..30 }, allow_blank: true
-  validates :basic_time, presence: true
+  validates :affiliation, length: { in: 2..30 }, allow_blank: true
+  validates :basic_work_time, presence: true
   validates :work_time, presence: true
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
@@ -46,5 +46,35 @@ class User < ApplicationRecord
    # ユーザーのログイン情報を破棄します。
   def forget
     update_attribute(:remember_digest, nil)
+  end
+  
+  def self.search(search)
+    return User.all unless search
+      where(['name LIKE ?', "%#{search}%"])
+  end
+  
+  def self.import(file)
+    imported_num = 0
+    
+    open(file.path, 'r:cp932:utf-8', undef: :replace) do |f|
+      csv = CSV.new(f, :headers => :first_row)
+      csv.each do |row|
+        next if row.header_row?
+        table = Hash[[row.headers, row.fields].transpose]
+        
+        user = find_by(email: table["email"])
+        if user.nil?
+          user = new
+        end
+        
+        user.attributes = table.to_hash.slice(*table.to_hash.except(:email, :create_at, :update_at).keys)
+        
+        if user.valid?
+          user.save!
+          imported_num += 1
+        end
+      end
+    end
+    imported_num
   end
 end

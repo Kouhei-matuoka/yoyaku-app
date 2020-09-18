@@ -1,47 +1,63 @@
-<% provide(:title, 'All Users') %>
-<h1>会員一覧</h1>
+<% provide(:title, "ユーザー一覧") %>
+<% provide(:class_text, "user--edit") %>
+<% provide(:btn_text, "更新") %>
+<h1><%= params[:search].present? ? "検索結果" : "ユーザー一覧" %></h1>
+<h3 class="center"><%= link_to "戻る", users_path if params[:search].present? %></h3>
 
-<div class="col-md-10 col-md-offset-1">
-  <%= will_paginate %>
-  <table class="table table-condensed table-hover" id="table-users">
-    <thead>
-      <tr>
-        <th><%= User.human_attribute_name :name %></th>
-        <th class="center"><%= User.human_attribute_name :department %></th>
-        <% if current_user.admin? %>
-          <th class="center"><%= User.human_attribute_name :basic_time %></th>
-          <th class="center"><%= User.human_attribute_name :work_time %></th>
-        <% end %>
-        <th></th>
-      </tr>
-    </thead>
-
-    <% @users.each do |user| %>
-      <tr>
-        <td>
-          <% if current_user.admin? %>
-            <%= link_to user.name, user %>
-          <% else %>
-            <%= user.name %>
-          <% end %>
-        </td>
-        <td class="center"><%= user.department.present? ? user.department : "未所属" %></td>
-        <% if current_user.admin? %>
-          <td class="center"><%= format_basic_info(user.basic_time) %></td>
-          <td class="center"><%= format_basic_info(user.work_time) %></td>
-        <% end %>
-        <td class="center">
-          <% if current_user.admin? && !current_user?(user) %>
-            <%= link_to "基本情報編集", edit_basic_info_user_path(user), remote: true, class: "btn btn-success" %>
-            <%= link_to "削除", user, method: :delete,
-                data: { confirm: "削除してよろしいですか？" }, class: "btn btn-danger" %>
-          <% end %>
-        </td>
-      </tr>
+<div class="container">
+  <div class="row form-group">
+<div class="col-md-4 col-md-offset-1 csv-group">
+    <%= form_tag(import_users_path, method: :post,  multipart: true) do %>
+      <%= file_field_tag :csv_file, class: "form-control form-csv" %>
+      <%= submit_tag "CSVをインポート", class: "btn btn-primary btn-block btn-csv" %>
     <% end %>
-  </table>
-  <%= will_paginate %>
+     </div>
+     
+<div class="col-md-2 col-md-offset-2 input-group">
+  <p>ユーザー名検索</p>
+  <%= form_tag(users_path, method: :get) do %>
+   <span class="input-group-btn">
+     <%= text_field_tag :search, '', placeholder: "キーワードを入力", class: "form-control" %>
+     <%= submit_tag '検索', name: :nil, class: "btn btn-primary" %>
+   </span>
+   <% end %>
+    </div>
+  </div>
 </div>
+
+<div class="row">
+  <div class="col-md-10 col-md-offset-1 paginate-top"><%= will_paginate %></div>
+</div>
+
+<div class="row col-md-10 col-md-offset-1">
+  <% @users.each do |user| %>
+   <div>
+     <p><%= user.name %></p>
+     <p>| <%= link_to "削除", '#', class: "btn btn-primary" %></p>
+   </div>
+   
+   <div class="acd jumbotron">
+     <div class="acd-content col-md-2">
+       <a class="btn btn-primary btn-lg btn-edit" data-toggle="collaspe" href="#collaspe<%= user.id %>" role="button">
+         編集
+       </a>
+     </div>
+   </div>
+   <div class="collaspe collaspe-panel" id="collaspe<%= user.id %>">
+     <div class="collapse-body">
+       <%= render 'form', { user: user } %>
+     </div>
+   </div>
+   <% end %>
+</div>
+
+<div class="row">
+  <div class="col-md-10 col-md-offset-1 paginate-bottom"><%= will_paginate %></div>
+</div>
+</div>
+
+
 
 <!--モーダルウインドウ表示-->
 <div id="edit-basic-info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit_basic_info" data-toggle="collaspe" href="edit_basic_info" role="button" aria-expandend="false" aria-controls="edit_basic_info"></div>
